@@ -1,20 +1,19 @@
 package com.github.librarymanagementsystem.service;
 
-import com.github.librarymanagementsystem.dto.BookDTO;
 import com.github.librarymanagementsystem.dto.MovieDTO;
-import com.github.librarymanagementsystem.entity.Book;
 import com.github.librarymanagementsystem.entity.Item;
+import com.github.librarymanagementsystem.entity.ItemType;
 import com.github.librarymanagementsystem.entity.Movie;
-import com.github.librarymanagementsystem.mapper.BookMapper;
 import com.github.librarymanagementsystem.mapper.MovieMapper;
-import com.github.librarymanagementsystem.repo.BookRepo;
 import com.github.librarymanagementsystem.repo.ItemRepo;
+import com.github.librarymanagementsystem.repo.ItemTypeRepo;
 import com.github.librarymanagementsystem.repo.MovieRepo;
 import com.github.librarymanagementsystem.service.interfaces.MovieService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,10 +25,13 @@ public class MovieServiceImpl implements MovieService {
 
     private ItemRepo itemRepo;
 
-    public MovieServiceImpl (MovieRepo movieRepo, MovieMapper movieMapper, ItemRepo itemRepo) {
+    private ItemTypeRepo itemTypeRepo;
+
+    public MovieServiceImpl (MovieRepo movieRepo, MovieMapper movieMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo) {
         this.movieRepo = movieRepo;
         this.movieMapper = movieMapper;
         this.itemRepo = itemRepo;
+        this.itemTypeRepo = itemTypeRepo;
     }
     @Override
     public List<MovieDTO> listAllMovies() {
@@ -39,7 +41,9 @@ public class MovieServiceImpl implements MovieService {
         for (Movie movie: movieList) {
             MovieDTO movieDTO = movieMapper.mapMovieDetails(movie);
 
-            List<Item> itemList = itemRepo.findByItemTypeIdAndMediaId(1L, movie.getId());
+            Optional<ItemType> movieItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("movie")).findFirst();
+
+            List<Item> itemList = itemRepo.findByItemTypeIdAndMediaId(movieItemType.get().getId(), movie.getId());
 
             movieDTO.setItems(itemList);
 
