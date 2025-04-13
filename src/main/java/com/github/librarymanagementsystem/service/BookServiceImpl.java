@@ -3,10 +3,12 @@ package com.github.librarymanagementsystem.service;
 import com.github.librarymanagementsystem.dto.BookDTO;
 import com.github.librarymanagementsystem.entity.Book;
 import com.github.librarymanagementsystem.entity.Item;
+import com.github.librarymanagementsystem.entity.ItemStatus;
 import com.github.librarymanagementsystem.entity.ItemType;
 import com.github.librarymanagementsystem.mapper.BookMapper;
 import com.github.librarymanagementsystem.repo.BookRepo;
 import com.github.librarymanagementsystem.repo.ItemRepo;
+import com.github.librarymanagementsystem.repo.ItemStatusRepo;
 import com.github.librarymanagementsystem.repo.ItemTypeRepo;
 import com.github.librarymanagementsystem.service.interfaces.BookService;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,14 @@ public class BookServiceImpl implements BookService {
 
     private ItemTypeRepo itemTypeRepo;
 
-    public BookServiceImpl (BookRepo bookRepo, BookMapper bookMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo) {
+    private ItemStatusRepo itemStatusRepo;
+
+    public BookServiceImpl (BookRepo bookRepo, BookMapper bookMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo, ItemStatusRepo itemStatusRepo) {
         this.bookRepo = bookRepo;
         this.bookMapper = bookMapper;
         this.itemRepo = itemRepo;
         this.itemTypeRepo = itemTypeRepo;
+        this.itemStatusRepo = itemStatusRepo;
     }
     @Override
     public List<BookDTO> listAllBooks() {
@@ -49,5 +54,25 @@ public class BookServiceImpl implements BookService {
         }
 
         return bookDTOList;
+    }
+
+    @Override
+    public Book addBook(BookDTO bookDTO) {
+        Book book = bookMapper.mapBookDTODetails(bookDTO);
+
+        book = bookRepo.save(book);
+
+        Optional<ItemType> bookItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("book")).findFirst();
+        Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+
+        for (int i = 1; i <= bookDTO.getNoOfCopies(); i++) {
+            Item item = new Item();
+            item.setMediaId(book.getId());
+            item.setItemType(bookItemType.get());
+            item.setItemStatus(availableItemStatus.get());
+            itemRepo.save(item);
+        }
+
+        return book;
     }
 }

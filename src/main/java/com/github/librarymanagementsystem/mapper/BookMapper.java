@@ -21,4 +21,18 @@ public class BookMapper {
 
         return bookDTO;
     }
+
+    public Book mapBookDTODetails(BookDTO bookDTO) {
+        Book book = new Book();
+
+        book.setIsbn(bookDTO.getIsbn());
+        book.setTitle(bookDTO.getTitle());
+        book.setDescription(bookDTO.getDescription());
+        book.setCost(bookDTO.getCost());
+        book.setAuthor(bookDTO.getAuthor());
+        book.setGenre(bookDTO.getGenre());
+        book.setPublisher(bookDTO.getPublisher());
+
+        return book;
+    }
 }
