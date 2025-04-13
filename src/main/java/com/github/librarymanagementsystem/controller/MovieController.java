@@ -1,10 +1,9 @@
 package com.github.librarymanagementsystem.controller;
 
 import com.github.librarymanagementsystem.dto.MovieDTO;
+import com.github.librarymanagementsystem.entity.Movie;
 import com.github.librarymanagementsystem.service.interfaces.MovieService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +21,15 @@ public class MovieController {
     @RequestMapping("/list")
     public List<MovieDTO> listAllMovies() {
         return movieService.listAllMovies();
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public Movie addMovie(@RequestBody MovieDTO movieDTO) {
+        if (movieDTO == null) {
+            throw new IllegalStateException("Please submit a movei to add.");
+        }
+
+        return movieService.addMovie(movieDTO);
     }
 }

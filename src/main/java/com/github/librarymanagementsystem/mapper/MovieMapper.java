@@ -22,4 +22,16 @@ public class MovieMapper {
 
         return movieDTO;
     }
+
+    public Movie mapMovieDTODetails(MovieDTO movieDTO) {
+        Movie movie = new Movie();
+
+        movie.setTitle(movieDTO.getTitle());
+        movie.setDescription(movieDTO.getDescription());
+        movie.setCost(movieDTO.getCost());
+        movie.setGenre(movieDTO.getGenre());
+        movie.setPublisher(movieDTO.getPublisher());
+
+        return movie;
+    }
 }

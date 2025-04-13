@@ -1,11 +1,10 @@
 package com.github.librarymanagementsystem.service;
 
 import com.github.librarymanagementsystem.dto.MovieDTO;
-import com.github.librarymanagementsystem.entity.Item;
-import com.github.librarymanagementsystem.entity.ItemType;
-import com.github.librarymanagementsystem.entity.Movie;
+import com.github.librarymanagementsystem.entity.*;
 import com.github.librarymanagementsystem.mapper.MovieMapper;
 import com.github.librarymanagementsystem.repo.ItemRepo;
+import com.github.librarymanagementsystem.repo.ItemStatusRepo;
 import com.github.librarymanagementsystem.repo.ItemTypeRepo;
 import com.github.librarymanagementsystem.repo.MovieRepo;
 import com.github.librarymanagementsystem.service.interfaces.MovieService;
@@ -27,11 +26,14 @@ public class MovieServiceImpl implements MovieService {
 
     private ItemTypeRepo itemTypeRepo;
 
-    public MovieServiceImpl (MovieRepo movieRepo, MovieMapper movieMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo) {
+    private ItemStatusRepo itemStatusRepo;
+
+    public MovieServiceImpl (MovieRepo movieRepo, MovieMapper movieMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo, ItemStatusRepo itemStatusRepo) {
         this.movieRepo = movieRepo;
         this.movieMapper = movieMapper;
         this.itemRepo = itemRepo;
         this.itemTypeRepo = itemTypeRepo;
+        this.itemStatusRepo = itemStatusRepo;
     }
     @Override
     public List<MovieDTO> listAllMovies() {
@@ -51,5 +53,25 @@ public class MovieServiceImpl implements MovieService {
         }
 
         return movieDTOList;
+    }
+
+    @Override
+    public Movie addMovie(MovieDTO movieDTO) {
+        Movie movie = movieMapper.mapMovieDTODetails(movieDTO);
+
+        movie = movieRepo.save(movie);
+
+        Optional<ItemType> movieItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("movie")).findFirst();
+        Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+
+        for (int i = 1; i <= movieDTO.getNoOfCopies(); i++) {
+            Item item = new Item();
+            item.setMediaId(movie.getId());
+            item.setItemType(movieItemType.get());
+            item.setItemStatus(availableItemStatus.get());
+            itemRepo.save(item);
+        }
+
+        return movie;
     }
 }
