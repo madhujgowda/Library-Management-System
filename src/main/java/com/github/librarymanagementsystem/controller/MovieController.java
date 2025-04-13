@@ -27,7 +27,7 @@ public class MovieController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public Movie addMovie(@RequestBody MovieDTO movieDTO) {
         if (movieDTO == null) {
-            throw new IllegalStateException("Please submit a movei to add.");
+            throw new IllegalStateException("Please submit a movie to add.");
         }
 
         return movieService.addMovie(movieDTO);

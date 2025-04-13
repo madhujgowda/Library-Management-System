@@ -2,16 +2,10 @@ package com.github.librarymanagementsystem.service;
 
 import com.github.librarymanagementsystem.dto.GameDTO;
 import com.github.librarymanagementsystem.dto.MovieDTO;
-import com.github.librarymanagementsystem.entity.Game;
-import com.github.librarymanagementsystem.entity.Item;
-import com.github.librarymanagementsystem.entity.ItemType;
-import com.github.librarymanagementsystem.entity.Movie;
+import com.github.librarymanagementsystem.entity.*;
 import com.github.librarymanagementsystem.mapper.GameMapper;
 import com.github.librarymanagementsystem.mapper.MovieMapper;
-import com.github.librarymanagementsystem.repo.GameRepo;
-import com.github.librarymanagementsystem.repo.ItemRepo;
-import com.github.librarymanagementsystem.repo.ItemTypeRepo;
-import com.github.librarymanagementsystem.repo.MovieRepo;
+import com.github.librarymanagementsystem.repo.*;
 import com.github.librarymanagementsystem.service.interfaces.GameService;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +24,14 @@ public class GameServiceImpl implements GameService {
 
     private ItemTypeRepo itemTypeRepo;
 
-    public GameServiceImpl (GameRepo gameRepo, GameMapper gameMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo) {
+    private ItemStatusRepo itemStatusRepo;
+
+    public GameServiceImpl (GameRepo gameRepo, GameMapper gameMapper, ItemRepo itemRepo, ItemTypeRepo itemTypeRepo, ItemStatusRepo itemStatusRepo) {
         this.gameRepo = gameRepo;
         this.gameMapper = gameMapper;
         this.itemRepo = itemRepo;
         this.itemTypeRepo = itemTypeRepo;
+        this.itemStatusRepo = itemStatusRepo;
     }
     @Override
     public List<GameDTO> listAllGames() {
@@ -54,5 +51,25 @@ public class GameServiceImpl implements GameService {
         }
 
         return gameDTOList;
+    }
+
+    @Override
+    public Game addGame(GameDTO gameDTO) {
+        Game game = gameMapper.mapGameDTODetails(gameDTO);
+
+        game = gameRepo.save(game);
+
+        Optional<ItemType> gameItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("game")).findFirst();
+        Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+
+        for (int i = 1; i <= gameDTO.getNoOfCopies(); i++) {
+            Item item = new Item();
+            item.setMediaId(game.getId());
+            item.setItemType(gameItemType.get());
+            item.setItemStatus(availableItemStatus.get());
+            itemRepo.save(item);
+        }
+
+        return game;
     }
 }

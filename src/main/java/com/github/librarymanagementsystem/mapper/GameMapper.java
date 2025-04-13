@@ -22,4 +22,17 @@ public class GameMapper {
 
         return gameDTO;
     }
+
+    public Game mapGameDTODetails(GameDTO gameDTO) {
+        Game game = new Game();
+
+        game.setTitle(gameDTO.getTitle());
+        game.setDescription(gameDTO.getDescription());
+        game.setCost(gameDTO.getCost());
+        game.setGenre(gameDTO.getGenre());
+        game.setPublisher(gameDTO.getPublisher());
+        game.setPlatform(gameDTO.getPlatform());
+
+        return game;
+    }
 }
