@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2025 at 04:19 AM
+-- Generation Time: Apr 14, 2025 at 04:08 PM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 5.6.32
 
@@ -25,6 +25,31 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `admin_id` int(11) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `password` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`admin_id`, `first_name`, `last_name`, `email`, `password`) VALUES
+(1, 'Mahalakshmi', 'Shambu Gowda', 'maha@gmail.com', 'maha'),
+(3, 'Ganesh', 'Konduri', 'ganesh@gmail.com', 'ganesh'),
+(4, 'Revanth', 'Dasari', 'revanth@gmail.com', 'revanth'),
+(5, 'Keerthana', 'Chitipothu', 'keerthana@gmail.com', 'keerthana'),
+(6, 'Sravani', 'Gorantla', 'sravani@gmail.com', 'sravani');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `author`
 --
 
@@ -40,7 +65,7 @@ CREATE TABLE `author` (
 
 INSERT INTO `author` (`author_id`, `first_name`, `last_name`) VALUES
 (1, 'William', 'Shakespeare'),
-(3, 'Likhita', 'Madhu'),
+(3, 'Likhita', 'Mudagere'),
 (4, 'J.R.R.', 'Tolkien');
 
 -- --------------------------------------------------------
@@ -54,7 +79,7 @@ CREATE TABLE `book` (
   `isbn` varchar(100) DEFAULT NULL,
   `title` varchar(150) DEFAULT NULL,
   `description` text,
-  `cost` int(11) DEFAULT NULL,
+  `cost` float DEFAULT NULL,
   `author_id` int(11) DEFAULT NULL,
   `genre_id` int(11) DEFAULT NULL,
   `publisher_id` int(11) DEFAULT NULL
@@ -65,8 +90,10 @@ CREATE TABLE `book` (
 --
 
 INSERT INTO `book` (`book_id`, `isbn`, `title`, `description`, `cost`, `author_id`, `genre_id`, `publisher_id`) VALUES
-(1, '978-0321765723', 'The Lord of the Rings', 'An epic fantasy adventure.', 25, 4, 4, 2),
-(2, '978-0743273565', 'Pride and Prejudice', 'A classic romance novel.', 15, 1, 3, 2);
+(1, '978-0321765723', 'The Lord of the Rings', 'An epic fantasy adventure.', 25.5, 4, 4, 2),
+(2, '978-0743273565', 'Pride and Prejudice', 'A classic romance novel.', 15, 1, 3, 2),
+(6, '987-655789776', 'War and Peace', 'war book', 25, 4, 2, 4),
+(7, '2123-1231231231', 'Ugly Love', 'its book', 24.25, 1, 3, 4);
 
 -- --------------------------------------------------------
 
@@ -78,7 +105,7 @@ CREATE TABLE `game` (
   `game_id` int(11) NOT NULL,
   `title` varchar(150) DEFAULT NULL,
   `description` text,
-  `cost` int(11) DEFAULT NULL,
+  `cost` float DEFAULT NULL,
   `genre_id` int(11) DEFAULT NULL,
   `publisher_id` int(11) DEFAULT NULL,
   `platform_id` int(11) DEFAULT NULL
@@ -89,7 +116,9 @@ CREATE TABLE `game` (
 --
 
 INSERT INTO `game` (`game_id`, `title`, `description`, `cost`, `genre_id`, `publisher_id`, `platform_id`) VALUES
-(1, 'Prince of Persia', 'Play as a prince of persia to save your queen', 49, 2, 2, 2);
+(1, 'Prince of Persia', 'Play as a prince of persia to save your queen', 49, 2, 2, 2),
+(2, 'The Last of Us', 'Legendary last of us game', 45, 4, 2, 2),
+(3, 'Assassin Creed II', 'assassin creed game in Italy', 20, 4, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -133,7 +162,21 @@ INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VAL
 (2, 2, 1, 1),
 (3, 1, 3, 1),
 (4, 1, 2, 1),
-(5, 1, 2, 1);
+(5, 1, 2, 1),
+(9, 6, 1, 1),
+(10, 6, 1, 1),
+(11, 6, 1, 1),
+(12, 2, 2, 1),
+(13, 2, 2, 1),
+(14, 2, 2, 1),
+(15, 2, 3, 1),
+(16, 2, 3, 1),
+(17, 3, 3, 1),
+(18, 7, 1, 1),
+(19, 7, 1, 1),
+(20, 7, 1, 1),
+(21, 7, 1, 1),
+(22, 7, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -162,7 +205,7 @@ INSERT INTO `item_status` (`status_id`, `status`) VALUES
 CREATE TABLE `item_type` (
   `item_type_id` int(11) NOT NULL,
   `type` varchar(150) NOT NULL,
-  `late_fee` int(11) NOT NULL,
+  `late_fee` float NOT NULL,
   `max_due_days` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -185,7 +228,7 @@ CREATE TABLE `movie` (
   `movie_id` int(11) NOT NULL,
   `title` varchar(150) DEFAULT NULL,
   `description` text,
-  `cost` int(11) DEFAULT NULL,
+  `cost` float DEFAULT NULL,
   `genre_id` int(11) DEFAULT NULL,
   `publisher_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -195,7 +238,8 @@ CREATE TABLE `movie` (
 --
 
 INSERT INTO `movie` (`movie_id`, `title`, `description`, `cost`, `genre_id`, `publisher_id`) VALUES
-(1, 'Titanic', 'Legendary titanic ship movie', 20, 2, 3);
+(1, 'Titanic', 'Legendary titanic ship movie', 20, 2, 3),
+(2, 'Troy', 'trojan war movie', 30, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -236,11 +280,19 @@ CREATE TABLE `publisher` (
 INSERT INTO `publisher` (`publisher_id`, `name`) VALUES
 (2, 'Sony'),
 (3, 'Microsoft'),
-(4, 'Houghton Mifflin Harcourt');
+(4, 'Houghton Mifflin Harcourt'),
+(5, 'Ubisoft');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `author`
@@ -318,6 +370,12 @@ ALTER TABLE `publisher`
 --
 
 --
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `author`
 --
 ALTER TABLE `author`
@@ -327,25 +385,25 @@ ALTER TABLE `author`
 -- AUTO_INCREMENT for table `book`
 --
 ALTER TABLE `book`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `game`
 --
 ALTER TABLE `game`
-  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `genre`
 --
 ALTER TABLE `genre`
-  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `item`
 --
 ALTER TABLE `item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `item_status`
@@ -363,7 +421,7 @@ ALTER TABLE `item_type`
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
-  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `platform`
@@ -375,7 +433,7 @@ ALTER TABLE `platform`
 -- AUTO_INCREMENT for table `publisher`
 --
 ALTER TABLE `publisher`
-  MODIFY `publisher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `publisher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
