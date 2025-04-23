@@ -2,11 +2,11 @@ package com.github.librarymanagementsystem.controller;
 
 import com.github.librarymanagementsystem.dto.BookDTO;
 import com.github.librarymanagementsystem.dto.UserDTO;
+import com.github.librarymanagementsystem.entity.Book;
+import com.github.librarymanagementsystem.entity.User;
 import com.github.librarymanagementsystem.service.interfaces.BookService;
 import com.github.librarymanagementsystem.service.interfaces.UserService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +24,15 @@ public class UserController {
     @RequestMapping("/list")
     public List<UserDTO> listAllUsers() {
         return userService.listAllUsers();
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public User addUser(@RequestBody User user) {
+        if (user == null) {
+            throw new IllegalStateException("Please submit a user to add.");
+        }
+
+        return userService.addUser(user);
     }
 }

@@ -38,4 +38,9 @@ public class UserServiceImpl implements UserService {
 
         return userDTOList;
     }
+
+    @Override
+    public User addUser(User user) {
+        return userRepo.save(user);
+    }
 }
