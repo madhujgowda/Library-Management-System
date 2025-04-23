@@ -54,6 +54,18 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public Game getGameById(Long gameId) {
+        Optional<Game> gameResult = gameRepo.findById(gameId);
+
+        Game game = null;
+        if (gameResult.isPresent()) {
+            game = gameResult.get();
+        }
+
+        return game;
+    }
+
+    @Override
     public Game addGame(GameDTO gameDTO) {
         Game game = gameMapper.mapGameDTODetails(gameDTO);
 
@@ -71,5 +83,10 @@ public class GameServiceImpl implements GameService {
         }
 
         return game;
+    }
+
+    @Override
+    public Game updateGame(Game game) {
+        return gameRepo.save(game);
     }
 }

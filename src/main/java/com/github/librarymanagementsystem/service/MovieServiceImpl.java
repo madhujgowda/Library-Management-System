@@ -56,6 +56,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public Movie getMovieById(Long movieId) {
+        Optional<Movie> movieResult = movieRepo.findById(movieId);
+
+        Movie movie = null;
+        if (movieResult.isPresent()) {
+            movie = movieResult.get();
+        }
+
+        return movie;
+    }
+
+    @Override
     public Movie addMovie(MovieDTO movieDTO) {
         Movie movie = movieMapper.mapMovieDTODetails(movieDTO);
 
@@ -73,5 +85,10 @@ public class MovieServiceImpl implements MovieService {
         }
 
         return movie;
+    }
+
+    @Override
+    public Movie updateMovie(Movie movie) {
+        return movieRepo.save(movie);
     }
 }

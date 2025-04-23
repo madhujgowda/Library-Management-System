@@ -57,6 +57,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Book getBookById(Long bookId) {
+        Optional<Book> bookResult = bookRepo.findById(bookId);
+
+        Book book = null;
+        if (bookResult.isPresent()) {
+            book = bookResult.get();
+        }
+
+        return book;
+    }
+
+    @Override
     public Book addBook(BookDTO bookDTO) {
         Book book = bookMapper.mapBookDTODetails(bookDTO);
 
@@ -74,5 +86,10 @@ public class BookServiceImpl implements BookService {
         }
 
         return book;
+    }
+
+    @Override
+    public Book updateBook(Book book) {
+        return bookRepo.save(book);
     }
 }

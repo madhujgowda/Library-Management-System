@@ -10,4 +10,9 @@ public interface GameService {
     List<GameDTO> listAllGames();
 
     Game addGame(GameDTO gameDTO);
+
+    Game getGameById(Long gameId);
+
+    Game updateGame(Game game);
+
 }

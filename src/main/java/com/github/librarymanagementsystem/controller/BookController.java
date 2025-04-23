@@ -24,6 +24,12 @@ public class BookController {
     }
 
     @ResponseBody
+    @RequestMapping("/view/{bookId}")
+    public Book getBookById(@PathVariable("bookId") Long bookId) {
+        return bookService.getBookById(bookId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public Book addBook(@RequestBody BookDTO bookDTO) {
         if (bookDTO == null) {
@@ -31,5 +37,15 @@ public class BookController {
         }
 
         return bookService.addBook(bookDTO);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public Book updateBook(@RequestBody Book book) {
+        if (book == null) {
+            throw new IllegalStateException("Please submit a book to update.");
+        }
+
+        return bookService.updateBook(book);
     }
 }

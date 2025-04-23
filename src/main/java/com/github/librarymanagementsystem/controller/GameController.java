@@ -24,6 +24,12 @@ public class GameController {
     }
 
     @ResponseBody
+    @RequestMapping("/view/{gameId}")
+    public Game getGameById(@PathVariable("gameId") Long gameId) {
+        return gameService.getGameById(gameId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public Game addGame(@RequestBody GameDTO gameDTO) {
         if (gameDTO == null) {
@@ -31,5 +37,15 @@ public class GameController {
         }
 
         return gameService.addGame(gameDTO);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public Game updateGame(@RequestBody Game game) {
+        if (game == null) {
+            throw new IllegalStateException("Please submit a game to update.");
+        }
+
+        return gameService.updateGame(game);
     }
 }

@@ -1,6 +1,7 @@
 package com.github.librarymanagementsystem.controller;
 
 import com.github.librarymanagementsystem.dto.MovieDTO;
+import com.github.librarymanagementsystem.entity.Book;
 import com.github.librarymanagementsystem.entity.Movie;
 import com.github.librarymanagementsystem.service.interfaces.MovieService;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,12 @@ public class MovieController {
     }
 
     @ResponseBody
+    @RequestMapping("/view/{movieId}")
+    public Movie getMovieById(@PathVariable("movieId") Long movieId) {
+        return movieService.getMovieById(movieId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public Movie addMovie(@RequestBody MovieDTO movieDTO) {
         if (movieDTO == null) {
@@ -31,5 +38,15 @@ public class MovieController {
         }
 
         return movieService.addMovie(movieDTO);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public Movie updateMovie(@RequestBody Movie movie) {
+        if (movie == null) {
+            throw new IllegalStateException("Please submit a movie to update.");
+        }
+
+        return movieService.updateMovie(movie);
     }
 }
