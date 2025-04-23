@@ -27,6 +27,12 @@ public class UserController {
     }
 
     @ResponseBody
+    @RequestMapping("/view/{userId}")
+    public UserDTO getUserById(@PathVariable("userId") Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public User addUser(@RequestBody User user) {
         if (user == null) {
@@ -34,5 +40,15 @@ public class UserController {
         }
 
         return userService.addUser(user);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public User updateUser(@RequestBody User user) {
+        if (user == null) {
+            throw new IllegalStateException("Please submit a user to update.");
+        }
+
+        return userService.updateUser(user);
     }
 }
