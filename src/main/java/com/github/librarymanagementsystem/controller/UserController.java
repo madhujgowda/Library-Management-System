@@ -1,6 +1,8 @@
 package com.github.librarymanagementsystem.controller;
 
 import com.github.librarymanagementsystem.dto.BookDTO;
+import com.github.librarymanagementsystem.dto.LoginRequest;
+import com.github.librarymanagementsystem.dto.LoginResponse;
 import com.github.librarymanagementsystem.dto.UserDTO;
 import com.github.librarymanagementsystem.entity.Book;
 import com.github.librarymanagementsystem.entity.User;
@@ -50,5 +52,11 @@ public class UserController {
         }
 
         return userService.updateUser(user);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest);
     }
 }

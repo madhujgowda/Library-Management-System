@@ -1,10 +1,9 @@
 package com.github.librarymanagementsystem.service;
 
+import com.github.librarymanagementsystem.dto.LoginRequest;
+import com.github.librarymanagementsystem.dto.LoginResponse;
 import com.github.librarymanagementsystem.dto.UserDTO;
-import com.github.librarymanagementsystem.entity.Item;
-import com.github.librarymanagementsystem.entity.ItemType;
-import com.github.librarymanagementsystem.entity.Movie;
-import com.github.librarymanagementsystem.entity.User;
+import com.github.librarymanagementsystem.entity.*;
 import com.github.librarymanagementsystem.mapper.UserMapper;
 import com.github.librarymanagementsystem.repo.UserRepo;
 import com.github.librarymanagementsystem.service.interfaces.UserService;
@@ -67,5 +66,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest loginRequest) {
+        User user = userRepo.findByEmail(loginRequest.getEmail());
+
+        if (user.getPassword().equals(loginRequest.getPassword())) {
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setUserId(user.getId());
+            loginResponse.setFirstName(user.getFirstName());
+            loginResponse.setLastName(user.getLastName());
+            loginResponse.setUserType(user.getUserType().getType());
+            return loginResponse;
+        } else {
+            return null;
+        }
     }
 }
