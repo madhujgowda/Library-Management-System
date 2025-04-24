@@ -1,10 +1,11 @@
 package com.github.librarymanagementsystem.controller;
 
-import com.github.librarymanagementsystem.dto.BookDTO;
-import com.github.librarymanagementsystem.entity.Book;
+import com.github.librarymanagementsystem.dto.ReservationDTO;
 import com.github.librarymanagementsystem.entity.Reservation;
 import com.github.librarymanagementsystem.service.interfaces.ReservationService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -14,6 +15,12 @@ public class ReservationController {
 
     public ReservationController (ReservationService reservationService) {
         this.reservationService = reservationService;
+    }
+
+    @ResponseBody
+    @RequestMapping("/user/{userId}")
+    public List<ReservationDTO> getReservationByUserId(@PathVariable("userId") Long userId) {
+        return reservationService.getReservationByUserId(userId);
     }
 
     @ResponseBody

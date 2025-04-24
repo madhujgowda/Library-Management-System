@@ -1,14 +1,14 @@
 package com.github.librarymanagementsystem.service;
 
-import com.github.librarymanagementsystem.entity.Item;
-import com.github.librarymanagementsystem.entity.ItemStatus;
-import com.github.librarymanagementsystem.entity.Reservation;
-import com.github.librarymanagementsystem.entity.User;
+import com.github.librarymanagementsystem.dto.ReservationDTO;
+import com.github.librarymanagementsystem.entity.*;
+import com.github.librarymanagementsystem.mapper.ReservationMapper;
 import com.github.librarymanagementsystem.repo.*;
 import com.github.librarymanagementsystem.repo.ReservationRepo;
 import com.github.librarymanagementsystem.service.interfaces.ReservationService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,17 +18,61 @@ public class ReservationServiceImpl implements ReservationService {
 
     private ReservationRepo reservationRepo;
 
+    private ReservationMapper reservationMapper;
+
     private ItemRepo itemRepo;
 
     private ItemStatusRepo itemStatusRepo;
 
     private UserRepo userRepo;
 
-    public ReservationServiceImpl(ReservationRepo reservationRepo, ItemRepo itemRepo, ItemStatusRepo itemStatusRepo, UserRepo userRepo) {
+    private BookRepo bookRepo;
+
+    private MovieRepo movieRepo;
+
+    private GameRepo gameRepo;
+
+    public ReservationServiceImpl(ReservationRepo reservationRepo, ReservationMapper reservationMapper, ItemRepo itemRepo, ItemStatusRepo itemStatusRepo, UserRepo userRepo, BookRepo bookRepo, MovieRepo movieRepo, GameRepo gameRepo) {
         this.reservationRepo = reservationRepo;
+        this.reservationMapper = reservationMapper;
         this.itemRepo = itemRepo;
         this.itemStatusRepo = itemStatusRepo;
         this.userRepo = userRepo;
+        this.bookRepo = bookRepo;
+        this.movieRepo = movieRepo;
+        this.gameRepo = gameRepo;
+    }
+
+    @Override
+    public List<ReservationDTO> getReservationByUserId(Long userId) {
+        List<Reservation> reservationList = reservationRepo.findByUserId(userId);
+
+        List<ReservationDTO> reservationDTOList = new ArrayList<>();
+
+        for (Reservation reservation: reservationList) {
+            ReservationDTO reservationDTO = reservationMapper.mapReservationDetails(reservation);
+
+            String itemType = reservation.getItem().getItemType().getType();
+            if (itemType.equals("book")) {
+                Optional<Book> bookResult = bookRepo.findById(reservation.getItem().getMediaId());
+                if (bookResult.isPresent()) {
+                    reservationDTO.setTitle(bookResult.get().getTitle());
+                }
+            } else if (itemType.equals("movie")) {
+                Optional<Movie> movieResult = movieRepo.findById(reservation.getItem().getMediaId());
+                if (movieResult.isPresent()) {
+                    reservationDTO.setTitle(movieResult.get().getTitle());
+                }
+            } else {
+                Optional<Game> gameResult = gameRepo.findById(reservation.getItem().getMediaId());
+                if (gameResult.isPresent()) {
+                    reservationDTO.setTitle(gameResult.get().getTitle());
+                }
+            }
+
+            reservationDTOList.add(reservationDTO);
+        }
+        return reservationDTOList;
     }
 
     @Override
