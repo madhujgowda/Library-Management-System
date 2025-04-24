@@ -37,9 +37,6 @@ public class ReservationServiceImpl implements ReservationService {
         if (userResult.isPresent()) {
             List<Reservation> reservationList = reservationRepo.findByUserId(reservation.getUser().getId());
 
-            System.out.println("Reservation size" + reservationList.size());
-            System.out.println("User max" + userResult.get().getUserType().getMaxReservation());
-
             if (reservationList.size() < userResult.get().getUserType().getMaxReservation()) {
                 Optional<Item> itemResult = itemRepo.findById(reservation.getItem().getId());
 
