@@ -16,10 +16,10 @@ public class UserType {
     private int maxCheckout;
 
     @Column(name = "max_reservation")
-    private String maxReservation;
+    private int maxReservation;
 
     @Column(name = "max_renewal")
-    private String maxRenewal;
+    private int maxRenewal;
 
     public Long getId() {
         return id;
@@ -45,19 +45,19 @@ public class UserType {
         this.maxCheckout = maxCheckout;
     }
 
-    public String getMaxReservation() {
+    public int getMaxReservation() {
         return maxReservation;
     }
 
-    public void setMaxReservation(String maxReservation) {
+    public void setMaxReservation(int maxReservation) {
         this.maxReservation = maxReservation;
     }
 
-    public String getMaxRenewal() {
+    public int getMaxRenewal() {
         return maxRenewal;
     }
 
-    public void setMaxRenewal(String maxRenewal) {
+    public void setMaxRenewal(int maxRenewal) {
         this.maxRenewal = maxRenewal;
     }
 }
