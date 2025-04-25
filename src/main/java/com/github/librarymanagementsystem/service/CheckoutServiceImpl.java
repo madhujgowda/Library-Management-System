@@ -33,10 +33,14 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     private ReservationRepo reservationRepo;
 
+    private FineRepo fineRepo;
+
+    private FineStatusRepo fineStatusRepo;
+
     public CheckoutServiceImpl(CheckoutRepo checkoutRepo, CheckoutMapper checkoutMapper,
                                UserRepo userRepo, ItemRepo itemRepo, ItemStatusRepo itemStatusRepo,
                                BookRepo bookRepo, MovieRepo movieRepo, GameRepo gameRepo,
-                               ReservationRepo reservationRepo) {
+                               ReservationRepo reservationRepo, FineRepo fineRepo, FineStatusRepo fineStatusRepo) {
         this.checkoutRepo = checkoutRepo;
         this.checkoutMapper = checkoutMapper;
         this.userRepo = userRepo;
@@ -46,6 +50,8 @@ public class CheckoutServiceImpl implements CheckoutService {
         this.movieRepo = movieRepo;
         this.gameRepo = gameRepo;
         this.reservationRepo = reservationRepo;
+        this.fineRepo = fineRepo;
+        this.fineStatusRepo = fineStatusRepo;
     }
 
     @Override
@@ -116,6 +122,17 @@ public class CheckoutServiceImpl implements CheckoutService {
             }
             itemRepo.save(item);
 
+            if (isDueDateBeforeToday(checkoutResult.get().getDueDate())) {
+                Fine fine = new Fine();
+                fine.setUser(checkoutResult.get().getUser());
+                fine.setItem(item);
+                fine.setDate(new Date());
+                fine.setAmount(calculateFine(checkoutResult.get()));
+                Optional<FineStatus> unPaidStatus = fineStatusRepo.findAll().stream().filter(fineStatus -> fineStatus.getStatus().equals("Unpaid")).findFirst();
+                fine.setFineStatus(unPaidStatus.get());
+                fineRepo.save(fine);
+            }
+
             checkoutRepo.delete(checkoutResult.get());
             return "Success";
         } else {
@@ -139,6 +156,17 @@ public class CheckoutServiceImpl implements CheckoutService {
                 item.setItemStatus(availableItemStatus.get());
             }
             itemRepo.save(item);
+
+            if (isDueDateBeforeToday(checkoutList.get(0).getDueDate())) {
+                Fine fine = new Fine();
+                fine.setUser(checkoutList.get(0).getUser());
+                fine.setItem(item);
+                fine.setDate(new Date());
+                fine.setAmount(calculateFine(checkoutList.get(0)));
+                Optional<FineStatus> unPaidStatus = fineStatusRepo.findAll().stream().filter(fineStatus -> fineStatus.getStatus().equals("Unpaid")).findFirst();
+                fine.setFineStatus(unPaidStatus.get());
+                fineRepo.save(fine);
+            }
 
             checkoutRepo.delete(checkoutList.get(0));
             return "Success";
@@ -177,5 +205,65 @@ public class CheckoutServiceImpl implements CheckoutService {
             checkoutDTOList.add(checkoutDTO);
         }
         return checkoutDTOList;
+    }
+
+    private Float calculateFine(Checkout checkout) {
+        Float lateFee = checkout.getItem().getItemType().getLateFee();
+
+        int dueDays = getDaysBetween(new Date(), checkout.getDueDate());
+        Float amount = lateFee * dueDays;
+
+        //check if the amount is more than item price
+        Float cost = 0F;
+        String itemType = checkout.getItem().getItemType().getType();
+        if (itemType.equals("book")) {
+            Optional<Book> bookResult = bookRepo.findById(checkout.getItem().getMediaId());
+            if (bookResult.isPresent()) {
+                cost = bookResult.get().getCost();
+            }
+        } else if (itemType.equals("movie")) {
+            Optional<Movie> movieResult = movieRepo.findById(checkout.getItem().getMediaId());
+            if (movieResult.isPresent()) {
+                cost = movieResult.get().getCost();
+            }
+        } else {
+            Optional<Game> gameResult = gameRepo.findById(checkout.getItem().getMediaId());
+            if (gameResult.isPresent()) {
+                cost = gameResult.get().getCost();
+            }
+        }
+        if (amount > cost) {
+            amount = cost;
+        }
+        return amount;
+    }
+
+    public int getDaysBetween(Date d1, Date d2) {
+        long diff = d1.getTime() - d2.getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        return (int) diffDays;
+    }
+
+    public boolean isDueDateBeforeToday(Date dueDate) {
+        Date today = new Date();
+
+        // Create Calendar instances for both dates
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(today);
+        cal2.setTime(dueDate);
+
+        // Compare the year, month, and day
+        if (cal2.get(Calendar.YEAR) < cal1.get(Calendar.YEAR)) {
+            return true;
+        } else if (cal2.get(Calendar.YEAR) == cal1.get(Calendar.YEAR)
+                && cal2.get(Calendar.MONTH) < cal1.get(Calendar.MONTH)) {
+            return true;
+        } else if (cal2.get(Calendar.YEAR) == cal1.get(Calendar.YEAR)
+                && cal2.get(Calendar.MONTH) == cal1.get(Calendar.MONTH)
+                && cal2.get(Calendar.DAY_OF_MONTH) < cal1.get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        }
+        return false;
     }
 }
