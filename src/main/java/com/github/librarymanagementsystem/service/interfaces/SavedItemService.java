@@ -1,10 +1,16 @@
 package com.github.librarymanagementsystem.service.interfaces;
 
+import com.github.librarymanagementsystem.dto.SavedItemDTO;
 import com.github.librarymanagementsystem.dto.SavedItemRequest;
 import com.github.librarymanagementsystem.entity.SavedItem;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 public interface SavedItemService {
+
+    List<SavedItemDTO> getRSavedItemsByUserId(Long userId);
 
     SavedItem createSavedItem(SavedItemRequest savedItemRequest);
 }

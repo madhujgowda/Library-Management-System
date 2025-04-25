@@ -1,16 +1,17 @@
 package com.github.librarymanagementsystem.service;
 
+import com.github.librarymanagementsystem.dto.ReservationDTO;
+import com.github.librarymanagementsystem.dto.SavedItemDTO;
 import com.github.librarymanagementsystem.dto.SavedItemRequest;
-import com.github.librarymanagementsystem.entity.ItemType;
-import com.github.librarymanagementsystem.entity.SavedItem;
-import com.github.librarymanagementsystem.entity.User;
-import com.github.librarymanagementsystem.repo.ItemTypeRepo;
-import com.github.librarymanagementsystem.repo.SavedItemRepo;
-import com.github.librarymanagementsystem.repo.UserRepo;
+import com.github.librarymanagementsystem.entity.*;
+import com.github.librarymanagementsystem.mapper.SavedItemMapper;
+import com.github.librarymanagementsystem.repo.*;
 import com.github.librarymanagementsystem.service.interfaces.SavedItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,14 +19,63 @@ public class SavedItemServiceImpl implements SavedItemService {
 
     private SavedItemRepo savedItemRepo;
 
+    private SavedItemMapper savedItemMapper;
+
     private UserRepo userRepo;
 
     private ItemTypeRepo itemTypeRepo;
 
-    public SavedItemServiceImpl (SavedItemRepo savedItemRepo, UserRepo userRepo, ItemTypeRepo itemTypeRepo) {
+    private BookRepo bookRepo;
+
+    private MovieRepo movieRepo;
+
+    private GameRepo gameRepo;
+
+    public SavedItemServiceImpl (SavedItemRepo savedItemRepo, UserRepo userRepo, ItemTypeRepo itemTypeRepo, SavedItemMapper savedItemMapper,
+                                 BookRepo bookRepo, MovieRepo movieRepo, GameRepo gameRepo) {
         this.savedItemRepo = savedItemRepo;
         this.userRepo = userRepo;
         this.itemTypeRepo = itemTypeRepo;
+        this.savedItemMapper = savedItemMapper;
+        this.bookRepo = bookRepo;
+        this.movieRepo = movieRepo;
+        this.gameRepo = gameRepo;
+    }
+
+    @Override
+    public List<SavedItemDTO> getRSavedItemsByUserId(Long userId) {
+        List<SavedItem> savedItemList = savedItemRepo.findByUserId(userId);
+
+        return mapSavedItemDetails(savedItemList);
+    }
+
+    private List<SavedItemDTO> mapSavedItemDetails(List<SavedItem> savedItemList) {
+        List<SavedItemDTO> savedItemDTOList = new ArrayList<>();
+
+        for (SavedItem savedItem: savedItemList) {
+            SavedItemDTO savedItemDTO = savedItemMapper.mapSavedItemDetails(savedItem);
+
+            String itemType = savedItem.getItemType().getType();
+            if (itemType.equals("book")) {
+                Optional<Book> bookResult = bookRepo.findById(savedItem.getMediaId());
+                if (bookResult.isPresent()) {
+                    savedItemDTO.setTitle(bookResult.get().getTitle());
+                }
+            } else if (itemType.equals("movie")) {
+                Optional<Movie> movieResult = movieRepo.findById(savedItem.getMediaId());
+                if (movieResult.isPresent()) {
+                    savedItemDTO.setTitle(movieResult.get().getTitle());
+                }
+            } else {
+                Optional<Game> gameResult = gameRepo.findById(savedItem.getMediaId());
+                if (gameResult.isPresent()) {
+                    savedItemDTO.setTitle(gameResult.get().getTitle());
+                }
+            }
+
+            savedItemDTOList.add(savedItemDTO);
+        }
+        return savedItemDTOList;
     }
 
     @Override
