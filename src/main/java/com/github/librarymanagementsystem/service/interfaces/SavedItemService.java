@@ -13,4 +13,6 @@ public interface SavedItemService {
     List<SavedItemDTO> getRSavedItemsByUserId(Long userId);
 
     SavedItem createSavedItem(SavedItemRequest savedItemRequest);
+
+    String deleteSavedItem(Long savedItemId);
 }

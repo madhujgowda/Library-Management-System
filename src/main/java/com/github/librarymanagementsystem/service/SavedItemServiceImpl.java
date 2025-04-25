@@ -101,4 +101,16 @@ public class SavedItemServiceImpl implements SavedItemService {
 
         return savedItemRepo.save(savedItem);
     }
+
+    @Override
+    public String deleteSavedItem(Long savedItemId) {
+        Optional<SavedItem> savedItemResult = savedItemRepo.findById(savedItemId);
+
+        if (savedItemResult.isPresent()) {
+            savedItemRepo.delete(savedItemResult.get());
+            return "Success";
+        } else {
+            throw new IllegalStateException("Failed to delete. Please try again");
+        }
+    }
 }

@@ -32,4 +32,10 @@ public class SavedItemController {
     public SavedItem createSavedItem(@RequestBody SavedItemRequest savedItemRequest) {
         return savedItemService.createSavedItem(savedItemRequest);
     }
+
+    @ResponseBody
+    @RequestMapping(path = "/delete/{savedItemId}", method = RequestMethod.DELETE)
+    public String deleteSavedItem(@PathVariable("savedItemId") Long savedItemId) {
+        return savedItemService.deleteSavedItem(savedItemId);
+    }
 }
