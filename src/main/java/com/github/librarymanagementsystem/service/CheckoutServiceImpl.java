@@ -31,9 +31,12 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     private GameRepo gameRepo;
 
+    private ReservationRepo reservationRepo;
+
     public CheckoutServiceImpl(CheckoutRepo checkoutRepo, CheckoutMapper checkoutMapper,
                                UserRepo userRepo, ItemRepo itemRepo, ItemStatusRepo itemStatusRepo,
-                               BookRepo bookRepo, MovieRepo movieRepo, GameRepo gameRepo) {
+                               BookRepo bookRepo, MovieRepo movieRepo, GameRepo gameRepo,
+                               ReservationRepo reservationRepo) {
         this.checkoutRepo = checkoutRepo;
         this.checkoutMapper = checkoutMapper;
         this.userRepo = userRepo;
@@ -42,6 +45,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         this.bookRepo = bookRepo;
         this.movieRepo = movieRepo;
         this.gameRepo = gameRepo;
+        this.reservationRepo = reservationRepo;
     }
 
     @Override
@@ -116,5 +120,29 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
 
         throw new IllegalStateException("User not found.");
+    }
+
+    @Override
+    public String returnItem(Long checkoutId) {
+        Optional<Checkout> checkoutResult = checkoutRepo.findById(checkoutId);
+        if (checkoutResult.isPresent()) {
+            Item item = checkoutResult.get().getItem();
+
+            List<Reservation> reservationList = reservationRepo.findByItemId(checkoutResult.get().getItem().getId());
+
+            if (reservationList.size() > 0) {
+                Optional<ItemStatus> onHoldItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("On-Hold")).findFirst();
+                item.setItemStatus(onHoldItemStatus.get());
+            } else {
+                Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+                item.setItemStatus(availableItemStatus.get());
+            }
+            itemRepo.save(item);
+
+            checkoutRepo.delete(checkoutResult.get());
+            return "Success";
+        } else {
+            throw new IllegalStateException("Failed to return. Please try again");
+        }
     }
 }

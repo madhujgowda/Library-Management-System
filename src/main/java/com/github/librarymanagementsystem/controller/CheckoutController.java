@@ -35,4 +35,10 @@ public class CheckoutController {
 
         return checkoutService.createCheckout(checkout);
     }
+
+    @ResponseBody
+    @RequestMapping(path = "/return/{checkoutId}", method = RequestMethod.DELETE)
+    public String returnItem(@PathVariable("checkoutId") Long checkoutId) {
+        return checkoutService.returnItem(checkoutId);
+    }
 }
