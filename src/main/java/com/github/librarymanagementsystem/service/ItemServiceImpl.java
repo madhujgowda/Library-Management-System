@@ -24,8 +24,18 @@ public class ItemServiceImpl implements ItemService {
     }
     @Override
     public List<Item> findByItemTypeAndMediaId(ItemRequest itemRequest) {
-        Optional<ItemType> bookItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("book")).findFirst();
+        Long itemTypeId;
+        if (itemRequest.getItemType().equals("Book")) {
+            Optional<ItemType> bookItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("book")).findFirst();
+            itemTypeId = bookItemType.get().getId();
+        } else if (itemRequest.getItemType().equals("Movie")) {
+            Optional<ItemType> movieItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("movie")).findFirst();
+            itemTypeId = movieItemType.get().getId();
+        } else {
+            Optional<ItemType> gameItemType = itemTypeRepo.findAll().stream().filter(itemType -> itemType.getType().equals("game")).findFirst();
+            itemTypeId = gameItemType.get().getId();
+        }
 
-        return itemRepo.findByItemTypeIdAndMediaId(bookItemType.get().getId(), itemRequest.getMediaId());
+        return itemRepo.findByItemTypeIdAndMediaId(itemTypeId, itemRequest.getMediaId());
     }
 }
