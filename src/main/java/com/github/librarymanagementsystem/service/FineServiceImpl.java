@@ -32,6 +32,17 @@ public class FineServiceImpl implements FineService {
     @Override
     public List<FineDTO> listAllFines() {
         List<Fine> fineList = fineRepo.findAll();
+
+        return mapFineDetails(fineList);
+    }
+
+    @Override
+    public List<FineDTO> listAllUserFines(Long userId) {
+        List<Fine> fineList = fineRepo.findByUserId(userId);
+        return mapFineDetails(fineList);
+    }
+
+    private List<FineDTO> mapFineDetails(List<Fine> fineList) {
         List<FineDTO> fineDTOList = new ArrayList<>();
 
         for(Fine fine: fineList){

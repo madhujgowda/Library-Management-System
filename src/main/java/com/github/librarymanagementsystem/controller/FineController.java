@@ -26,6 +26,12 @@ public class FineController {
     }
 
     @ResponseBody
+    @RequestMapping("/user/list/{userId}")
+    public List<FineDTO> listAllUserFines(@PathVariable("userId") Long userId) {
+        return fineService.listAllUserFines(userId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/pay/{fineId}", method = RequestMethod.POST)
     public Fine payFine(@PathVariable("fineId") Long fineId) {
         if (fineId == null) {
