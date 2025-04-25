@@ -11,7 +11,12 @@ import java.util.List;
 public interface CheckoutService {
 
     List<CheckoutDTO> listAllCheckedItems();
+
+    List<CheckoutDTO> listAllUserCheckedItems(Long userId);
+
     Checkout createCheckout(Checkout checkout);
 
-    String returnItem(Long checkoutId);
+    String returnCheckout(Long checkoutId);
+
+    String returnItem(Long itemId);
 }

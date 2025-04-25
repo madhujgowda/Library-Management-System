@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CheckoutRepo extends JpaRepository<Checkout, Long> {
     List<Checkout> findByUserId(Long userId);
+
+    List<Checkout> findByItemId(Long itemId);
 }

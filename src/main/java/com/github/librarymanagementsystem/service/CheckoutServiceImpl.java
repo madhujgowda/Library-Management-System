@@ -51,36 +51,13 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Override
     public List<CheckoutDTO> listAllCheckedItems() {
         List<Checkout> checkoutList = checkoutRepo.findAll();
-        List<CheckoutDTO> checkoutDTOList = new ArrayList<>();
+        return mapCheckoutDetails(checkoutList);
+    }
 
-        for (Checkout checkout: checkoutList) {
-            CheckoutDTO checkoutDTO = checkoutMapper.mapCheckoutDetails(checkout);
-
-            Optional<Item> itemResult = itemRepo.findById(checkout.getItem().getId());
-
-            if (itemResult.isPresent()) {
-                String itemType = checkout.getItem().getItemType().getType();
-                if (itemType.equals("book")) {
-                    Optional<Book> bookResult = bookRepo.findById(checkout.getItem().getMediaId());
-                    if (bookResult.isPresent()) {
-                        checkoutDTO.setTitle(bookResult.get().getTitle());
-                    }
-                } else if (itemType.equals("movie")) {
-                    Optional<Movie> movieResult = movieRepo.findById(checkout.getItem().getMediaId());
-                    if (movieResult.isPresent()) {
-                        checkoutDTO.setTitle(movieResult.get().getTitle());
-                    }
-                } else {
-                    Optional<Game> gameResult = gameRepo.findById(checkout.getItem().getMediaId());
-                    if (gameResult.isPresent()) {
-                        checkoutDTO.setTitle(gameResult.get().getTitle());
-                    }
-                }
-            }
-            checkoutDTOList.add(checkoutDTO);
-        }
-
-        return checkoutDTOList;
+    @Override
+    public List<CheckoutDTO> listAllUserCheckedItems(Long userId) {
+        List<Checkout> checkoutList = checkoutRepo.findByUserId(userId);
+        return mapCheckoutDetails(checkoutList);
     }
 
     @Override
@@ -123,7 +100,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public String returnItem(Long checkoutId) {
+    public String returnCheckout(Long checkoutId) {
         Optional<Checkout> checkoutResult = checkoutRepo.findById(checkoutId);
         if (checkoutResult.isPresent()) {
             Item item = checkoutResult.get().getItem();
@@ -144,5 +121,61 @@ public class CheckoutServiceImpl implements CheckoutService {
         } else {
             throw new IllegalStateException("Failed to return. Please try again");
         }
+    }
+
+    @Override
+    public String returnItem(Long itemId) {
+        List<Checkout> checkoutList = checkoutRepo.findByItemId(itemId);
+        if (!checkoutList.isEmpty()) {
+            Item item = checkoutList.get(0).getItem();
+
+            List<Reservation> reservationList = reservationRepo.findByItemId(checkoutList.get(0).getItem().getId());
+
+            if (reservationList.size() > 0) {
+                Optional<ItemStatus> onHoldItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("On-Hold")).findFirst();
+                item.setItemStatus(onHoldItemStatus.get());
+            } else {
+                Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+                item.setItemStatus(availableItemStatus.get());
+            }
+            itemRepo.save(item);
+
+            checkoutRepo.delete(checkoutList.get(0));
+            return "Success";
+        } else {
+            throw new IllegalStateException("Failed to return. Please try again");
+        }
+    }
+
+    private List<CheckoutDTO> mapCheckoutDetails(List<Checkout> checkoutList) {
+        List<CheckoutDTO> checkoutDTOList = new ArrayList<>();
+
+        for (Checkout checkout: checkoutList) {
+            CheckoutDTO checkoutDTO = checkoutMapper.mapCheckoutDetails(checkout);
+
+            Optional<Item> itemResult = itemRepo.findById(checkout.getItem().getId());
+
+            if (itemResult.isPresent()) {
+                String itemType = checkout.getItem().getItemType().getType();
+                if (itemType.equals("book")) {
+                    Optional<Book> bookResult = bookRepo.findById(checkout.getItem().getMediaId());
+                    if (bookResult.isPresent()) {
+                        checkoutDTO.setTitle(bookResult.get().getTitle());
+                    }
+                } else if (itemType.equals("movie")) {
+                    Optional<Movie> movieResult = movieRepo.findById(checkout.getItem().getMediaId());
+                    if (movieResult.isPresent()) {
+                        checkoutDTO.setTitle(movieResult.get().getTitle());
+                    }
+                } else {
+                    Optional<Game> gameResult = gameRepo.findById(checkout.getItem().getMediaId());
+                    if (gameResult.isPresent()) {
+                        checkoutDTO.setTitle(gameResult.get().getTitle());
+                    }
+                }
+            }
+            checkoutDTOList.add(checkoutDTO);
+        }
+        return checkoutDTOList;
     }
 }

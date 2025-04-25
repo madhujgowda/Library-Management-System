@@ -27,6 +27,12 @@ public class CheckoutController {
     }
 
     @ResponseBody
+    @RequestMapping("/user/list/{userId}")
+    public List<CheckoutDTO> listAllUserCheckedItems(@PathVariable("userId") Long userId) {
+        return checkoutService.listAllUserCheckedItems(userId);
+    }
+
+    @ResponseBody
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     public Checkout createCheckout(@RequestBody Checkout checkout) {
         if (checkout == null) {
@@ -38,7 +44,13 @@ public class CheckoutController {
 
     @ResponseBody
     @RequestMapping(path = "/return/{checkoutId}", method = RequestMethod.DELETE)
-    public String returnItem(@PathVariable("checkoutId") Long checkoutId) {
-        return checkoutService.returnItem(checkoutId);
+    public String returnCheckout(@PathVariable("checkoutId") Long checkoutId) {
+        return checkoutService.returnCheckout(checkoutId);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/return/item/{itemId}", method = RequestMethod.DELETE)
+    public String returnItem(@PathVariable("itemId") Long itemId) {
+        return checkoutService.returnItem(itemId);
     }
 }
