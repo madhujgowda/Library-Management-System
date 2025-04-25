@@ -44,6 +44,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationDTO> listAllReservations() {
+        List<Reservation> reservationList = reservationRepo.findAll();
+
+        return mapReservationDetails(reservationList);
+    }
+
+    @Override
     public List<ReservationDTO> getReservationById(Long reservationId) {
         Optional<Reservation> reservationResult = reservationRepo.findById(reservationId);
 

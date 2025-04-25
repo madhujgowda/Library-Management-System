@@ -19,6 +19,12 @@ public class ReservationController {
     }
 
     @ResponseBody
+    @RequestMapping("/list")
+    public List<ReservationDTO> listAllReservations() {
+        return reservationService.listAllReservations();
+    }
+
+    @ResponseBody
     @RequestMapping("/view/{reservationId}")
     public List<ReservationDTO> getReservationById(@PathVariable("reservationId") Long reservationId) {
         return reservationService.getReservationById(reservationId);

@@ -6,6 +6,8 @@ import com.github.librarymanagementsystem.entity.Reservation;
 import java.util.List;
 
 public interface ReservationService {
+
+    List<ReservationDTO> listAllReservations();
     List<ReservationDTO> getReservationById(Long reservationId);
 
     List<ReservationDTO> getReservationByUserId(Long userId);
