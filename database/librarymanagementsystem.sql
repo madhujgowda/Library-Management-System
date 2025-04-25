@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2025 at 06:06 AM
+-- Generation Time: Apr 26, 2025 at 01:28 AM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 5.6.32
 
@@ -116,7 +116,48 @@ CREATE TABLE `checkout` (
 --
 
 INSERT INTO `checkout` (`checkout_id`, `checkout_date`, `due_date`, `item_id`, `user_id`, `renewal_count`) VALUES
-(9, '2025-04-24', '2025-04-27', 4, 2, 0);
+(20, '2025-04-25', '2025-04-30', 1, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fine`
+--
+
+CREATE TABLE `fine` (
+  `fine_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `date` date NOT NULL,
+  `fine_status_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `fine`
+--
+
+INSERT INTO `fine` (`fine_id`, `user_id`, `item_id`, `amount`, `date`, `fine_status_id`) VALUES
+(5, 1, 1, 9, '2025-04-25', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fine_status`
+--
+
+CREATE TABLE `fine_status` (
+  `fine_status_id` int(11) NOT NULL,
+  `status` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `fine_status`
+--
+
+INSERT INTO `fine_status` (`fine_status_id`, `status`) VALUES
+(1, 'Unpaid'),
+(2, 'Paid');
 
 -- --------------------------------------------------------
 
@@ -183,12 +224,12 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VALUES
-(1, 1, 1, 1),
+(1, 1, 1, 2),
 (2, 2, 1, 1),
 (3, 1, 3, 1),
-(4, 1, 2, 2),
+(4, 1, 2, 1),
 (5, 1, 2, 1),
-(9, 6, 1, 3),
+(9, 6, 1, 1),
 (10, 6, 1, 1),
 (11, 6, 1, 1),
 (12, 2, 2, 3),
@@ -196,9 +237,9 @@ INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VAL
 (14, 2, 2, 1),
 (15, 2, 3, 1),
 (16, 2, 3, 1),
-(17, 3, 3, 3),
+(17, 3, 3, 1),
 (18, 7, 1, 1),
-(19, 7, 1, 1),
+(19, 7, 1, 3),
 (20, 7, 1, 1),
 (21, 7, 1, 1),
 (22, 7, 1, 1),
@@ -340,10 +381,33 @@ CREATE TABLE `reservation` (
 --
 
 INSERT INTO `reservation` (`reservation_id`, `item_id`, `user_id`, `date`) VALUES
-(2, 9, 2, '2025-04-24'),
 (8, 12, 1, '2025-04-24'),
-(10, 17, 1, '2025-04-24'),
-(11, 29, 2, '2025-04-24');
+(11, 29, 2, '2025-04-24'),
+(14, 19, 2, '2025-04-24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saved_item`
+--
+
+CREATE TABLE `saved_item` (
+  `saved_item_id` int(11) NOT NULL,
+  `media_id` int(11) NOT NULL,
+  `item_type_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `saved_item`
+--
+
+INSERT INTO `saved_item` (`saved_item_id`, `media_id`, `item_type_id`, `user_id`, `date`) VALUES
+(5, 2, 2, 1, '2025-04-25'),
+(6, 1, 2, 1, '2025-04-25'),
+(7, 1, 1, 1, '2025-04-25'),
+(8, 1, 3, 1, '2025-04-25');
 
 -- --------------------------------------------------------
 
@@ -430,6 +494,21 @@ ALTER TABLE `checkout`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `fine`
+--
+ALTER TABLE `fine`
+  ADD PRIMARY KEY (`fine_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `item_id` (`item_id`),
+  ADD KEY `fine_status_id` (`fine_status_id`);
+
+--
+-- Indexes for table `fine_status`
+--
+ALTER TABLE `fine_status`
+  ADD PRIMARY KEY (`fine_status_id`);
+
+--
 -- Indexes for table `game`
 --
 ALTER TABLE `game`
@@ -493,6 +572,14 @@ ALTER TABLE `reservation`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `saved_item`
+--
+ALTER TABLE `saved_item`
+  ADD PRIMARY KEY (`saved_item_id`),
+  ADD KEY `item_type_id` (`item_type_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -532,7 +619,19 @@ ALTER TABLE `book`
 -- AUTO_INCREMENT for table `checkout`
 --
 ALTER TABLE `checkout`
-  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `fine`
+--
+ALTER TABLE `fine`
+  MODIFY `fine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `fine_status`
+--
+ALTER TABLE `fine_status`
+  MODIFY `fine_status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `game`
@@ -586,7 +685,13 @@ ALTER TABLE `publisher`
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `saved_item`
+--
+ALTER TABLE `saved_item`
+  MODIFY `saved_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -620,6 +725,14 @@ ALTER TABLE `checkout`
   ADD CONSTRAINT `checkout_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 --
+-- Constraints for table `fine`
+--
+ALTER TABLE `fine`
+  ADD CONSTRAINT `fine_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  ADD CONSTRAINT `fine_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`),
+  ADD CONSTRAINT `fine_ibfk_3` FOREIGN KEY (`fine_status_id`) REFERENCES `fine_status` (`fine_status_id`);
+
+--
 -- Constraints for table `game`
 --
 ALTER TABLE `game`
@@ -647,6 +760,13 @@ ALTER TABLE `movie`
 ALTER TABLE `reservation`
   ADD CONSTRAINT `reservation_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`),
   ADD CONSTRAINT `reservation_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `saved_item`
+--
+ALTER TABLE `saved_item`
+  ADD CONSTRAINT `saved_item_ibfk_1` FOREIGN KEY (`item_type_id`) REFERENCES `item_type` (`item_type_id`),
+  ADD CONSTRAINT `saved_item_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 --
 -- Constraints for table `user`
