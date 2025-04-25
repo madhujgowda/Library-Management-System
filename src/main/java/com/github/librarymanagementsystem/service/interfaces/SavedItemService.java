@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface SavedItemService {
 
-    List<SavedItemDTO> getRSavedItemsByUserId(Long userId);
+    List<SavedItemDTO> getSavedItemsByUserId(Long userId);
+
+    List<SavedItemDTO> getSavedItemsByMediaId(Long mediaId);
 
     SavedItem createSavedItem(SavedItemRequest savedItemRequest);
 

@@ -1,9 +1,6 @@
 package com.github.librarymanagementsystem.controller;
 
-import com.github.librarymanagementsystem.dto.ItemRequest;
-import com.github.librarymanagementsystem.dto.ReservationDTO;
-import com.github.librarymanagementsystem.dto.SavedItemDTO;
-import com.github.librarymanagementsystem.dto.SavedItemRequest;
+import com.github.librarymanagementsystem.dto.*;
 import com.github.librarymanagementsystem.entity.Item;
 import com.github.librarymanagementsystem.entity.SavedItem;
 import com.github.librarymanagementsystem.service.interfaces.SavedItemService;
@@ -23,8 +20,14 @@ public class SavedItemController {
 
     @ResponseBody
     @RequestMapping("/user/{userId}")
-    public List<SavedItemDTO> getRSavedItemsByUserId(@PathVariable("userId") Long userId) {
-        return savedItemService.getRSavedItemsByUserId(userId);
+    public List<SavedItemDTO> getSavedItemsByUserId(@PathVariable("userId") Long userId) {
+        return savedItemService.getSavedItemsByUserId(userId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/media/{mediaId}")
+    public List<SavedItemDTO> getSavedItemsByMediaId(@PathVariable("mediaId") Long mediaId) {
+        return savedItemService.getSavedItemsByMediaId(mediaId);
     }
 
     @ResponseBody

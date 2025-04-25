@@ -43,8 +43,15 @@ public class SavedItemServiceImpl implements SavedItemService {
     }
 
     @Override
-    public List<SavedItemDTO> getRSavedItemsByUserId(Long userId) {
+    public List<SavedItemDTO> getSavedItemsByUserId(Long userId) {
         List<SavedItem> savedItemList = savedItemRepo.findByUserId(userId);
+
+        return mapSavedItemDetails(savedItemList);
+    }
+
+    @Override
+    public List<SavedItemDTO> getSavedItemsByMediaId(Long mediaId) {
+        List<SavedItem> savedItemList = savedItemRepo.findByMediaId(mediaId);
 
         return mapSavedItemDetails(savedItemList);
     }

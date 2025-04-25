@@ -9,4 +9,6 @@ import java.util.List;
 public interface SavedItemRepo extends JpaRepository<SavedItem, Long> {
 
     List<SavedItem> findByUserId(Long userId);
+
+    List<SavedItem> findByMediaId(Long mediaId);
 }
