@@ -1,6 +1,7 @@
 package com.github.librarymanagementsystem.controller;
 
 import com.github.librarymanagementsystem.dto.ReservationDTO;
+import com.github.librarymanagementsystem.dto.UserDTO;
 import com.github.librarymanagementsystem.entity.Reservation;
 import com.github.librarymanagementsystem.service.interfaces.ReservationService;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,21 @@ public class ReservationController {
     }
 
     @ResponseBody
+    @RequestMapping("/view/{reservationId}")
+    public List<ReservationDTO> getReservationById(@PathVariable("reservationId") Long reservationId) {
+        return reservationService.getReservationById(reservationId);
+    }
+
+    @ResponseBody
     @RequestMapping("/user/{userId}")
     public List<ReservationDTO> getReservationByUserId(@PathVariable("userId") Long userId) {
         return reservationService.getReservationByUserId(userId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/item/{itemId}")
+    public List<ReservationDTO> getReservationByItemId(@PathVariable("itemId") Long itemId) {
+        return reservationService.getReservationByItemId(itemId);
     }
 
     @ResponseBody

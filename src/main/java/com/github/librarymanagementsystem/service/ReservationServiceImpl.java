@@ -44,35 +44,34 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDTO> getReservationByUserId(Long userId) {
-        List<Reservation> reservationList = reservationRepo.findByUserId(userId);
+    public List<ReservationDTO> getReservationById(Long reservationId) {
+        Optional<Reservation> reservationResult = reservationRepo.findById(reservationId);
 
         List<ReservationDTO> reservationDTOList = new ArrayList<>();
 
-        for (Reservation reservation: reservationList) {
-            ReservationDTO reservationDTO = reservationMapper.mapReservationDetails(reservation);
+        if (reservationResult.isPresent()) {
+            List<Reservation> reservationList = new ArrayList<>();
+            reservationList.add(reservationResult.get());
 
-            String itemType = reservation.getItem().getItemType().getType();
-            if (itemType.equals("book")) {
-                Optional<Book> bookResult = bookRepo.findById(reservation.getItem().getMediaId());
-                if (bookResult.isPresent()) {
-                    reservationDTO.setTitle(bookResult.get().getTitle());
-                }
-            } else if (itemType.equals("movie")) {
-                Optional<Movie> movieResult = movieRepo.findById(reservation.getItem().getMediaId());
-                if (movieResult.isPresent()) {
-                    reservationDTO.setTitle(movieResult.get().getTitle());
-                }
-            } else {
-                Optional<Game> gameResult = gameRepo.findById(reservation.getItem().getMediaId());
-                if (gameResult.isPresent()) {
-                    reservationDTO.setTitle(gameResult.get().getTitle());
-                }
-            }
-
-            reservationDTOList.add(reservationDTO);
+            reservationDTOList = mapReservationDetails(reservationList);
         }
+
+
         return reservationDTOList;
+    }
+
+    @Override
+    public List<ReservationDTO> getReservationByUserId(Long userId) {
+        List<Reservation> reservationList = reservationRepo.findByUserId(userId);
+
+        return mapReservationDetails(reservationList);
+    }
+
+    @Override
+    public List<ReservationDTO> getReservationByItemId(Long itemId) {
+        List<Reservation> reservationList = reservationRepo.findByItemId(itemId);
+
+        return mapReservationDetails(reservationList);
     }
 
     @Override
@@ -128,5 +127,34 @@ public class ReservationServiceImpl implements ReservationService {
         } else {
             throw new IllegalStateException("Failed to delete. Please try again");
         }
+    }
+
+    private List<ReservationDTO> mapReservationDetails(List<Reservation> reservationList){
+        List<ReservationDTO> reservationDTOList = new ArrayList<>();
+
+        for (Reservation reservation: reservationList) {
+            ReservationDTO reservationDTO = reservationMapper.mapReservationDetails(reservation);
+
+            String itemType = reservation.getItem().getItemType().getType();
+            if (itemType.equals("book")) {
+                Optional<Book> bookResult = bookRepo.findById(reservation.getItem().getMediaId());
+                if (bookResult.isPresent()) {
+                    reservationDTO.setTitle(bookResult.get().getTitle());
+                }
+            } else if (itemType.equals("movie")) {
+                Optional<Movie> movieResult = movieRepo.findById(reservation.getItem().getMediaId());
+                if (movieResult.isPresent()) {
+                    reservationDTO.setTitle(movieResult.get().getTitle());
+                }
+            } else {
+                Optional<Game> gameResult = gameRepo.findById(reservation.getItem().getMediaId());
+                if (gameResult.isPresent()) {
+                    reservationDTO.setTitle(gameResult.get().getTitle());
+                }
+            }
+
+            reservationDTOList.add(reservationDTO);
+        }
+        return reservationDTOList;
     }
 }
