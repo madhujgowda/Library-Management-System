@@ -1,0 +1,28 @@
+package com.github.librarymanagementsystem.controller;
+
+import com.github.librarymanagementsystem.dto.GameDTO;
+import com.github.librarymanagementsystem.entity.Checkout;
+import com.github.librarymanagementsystem.entity.Game;
+import com.github.librarymanagementsystem.service.interfaces.CheckoutService;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/checkout")
+public class CheckoutController {
+
+    private CheckoutService checkoutService;
+
+    public CheckoutController (CheckoutService checkoutService) {
+        this.checkoutService = checkoutService;
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
+    public Checkout createCheckout(@RequestBody Checkout checkout) {
+        if (checkout == null) {
+            throw new IllegalStateException("Please submit a checkout.");
+        }
+
+        return checkoutService.createCheckout(checkout);
+    }
+}
