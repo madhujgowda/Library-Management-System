@@ -32,4 +32,10 @@ public class ReservationController {
 
         return reservationService.createReservation(reservation);
     }
+
+    @ResponseBody
+    @RequestMapping(path = "/delete/{reservationId}", method = RequestMethod.DELETE)
+    public String deleteReservation(@PathVariable("reservationId") Long reservationId) {
+        return reservationService.deleteReservation(reservationId);
+    }
 }

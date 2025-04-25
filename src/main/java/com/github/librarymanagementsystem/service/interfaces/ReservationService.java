@@ -10,4 +10,6 @@ public interface ReservationService {
     List<ReservationDTO> getReservationByUserId(Long userId);
 
     Reservation createReservation(Reservation reservation);
+
+    String deleteReservation(Long reservationId);
 }

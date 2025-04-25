@@ -85,11 +85,14 @@ public class ReservationServiceImpl implements ReservationService {
                 Optional<Item> itemResult = itemRepo.findById(reservation.getItem().getId());
 
                 if (itemResult.isPresent()) {
-                    Optional<ItemStatus> onHoldItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("On-Hold")).findFirst();
-
                     Item item = itemResult.get();
-                    item.setItemStatus(onHoldItemStatus.get());
-                    itemRepo.save(item);
+
+                    if (!item.getItemStatus().getStatus().equals("Checked-Out")) {
+                        Optional<ItemStatus> onHoldItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("On-Hold")).findFirst();
+
+                        item.setItemStatus(onHoldItemStatus.get());
+                        itemRepo.save(item);
+                    }
 
                     reservation.setDate(new Date());
                     return reservationRepo.save(reservation);
@@ -100,5 +103,30 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         return reservation;
+    }
+
+    @Override
+    public String deleteReservation(Long reservationId) {
+        Optional<Reservation> reservationResult = reservationRepo.findById(reservationId);
+
+        if (reservationResult.isPresent()) {
+            Optional<Item> itemResult = itemRepo.findById(reservationResult.get().getItem().getId());
+
+            if (itemResult.isPresent()) {
+                Item item = itemResult.get();
+
+                if (!item.getItemStatus().getStatus().equals("Checked-Out")) {
+                    Optional<ItemStatus> availableItemStatus = itemStatusRepo.findAll().stream().filter(itemStatus -> itemStatus.getStatus().equals("Available")).findFirst();
+                    item.setItemStatus(availableItemStatus.get());
+
+                    itemRepo.save(item);
+                }
+            }
+
+            reservationRepo.delete(reservationResult.get());
+            return "Success";
+        } else {
+            throw new IllegalStateException("Failed to delete. Please try again");
+        }
     }
 }
