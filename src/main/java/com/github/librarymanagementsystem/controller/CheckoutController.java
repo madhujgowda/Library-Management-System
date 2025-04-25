@@ -1,10 +1,14 @@
 package com.github.librarymanagementsystem.controller;
 
+import com.github.librarymanagementsystem.dto.BookDTO;
+import com.github.librarymanagementsystem.dto.CheckoutDTO;
 import com.github.librarymanagementsystem.dto.GameDTO;
 import com.github.librarymanagementsystem.entity.Checkout;
 import com.github.librarymanagementsystem.entity.Game;
 import com.github.librarymanagementsystem.service.interfaces.CheckoutService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/checkout")
@@ -14,6 +18,12 @@ public class CheckoutController {
 
     public CheckoutController (CheckoutService checkoutService) {
         this.checkoutService = checkoutService;
+    }
+
+    @ResponseBody
+    @RequestMapping("/list")
+    public List<CheckoutDTO> listAllCheckedItems() {
+        return checkoutService.listAllCheckedItems();
     }
 
     @ResponseBody
