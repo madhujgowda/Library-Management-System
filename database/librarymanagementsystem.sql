@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2025 at 01:28 AM
+-- Generation Time: Apr 26, 2025 at 06:21 AM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 5.6.32
 
@@ -94,7 +94,8 @@ INSERT INTO `book` (`book_id`, `isbn`, `title`, `description`, `cost`, `author_i
 (2, '978-0743273565', 'Pride and Prejudice', 'A classic romance novel.', 15.5, 3, 2, 3),
 (6, '987-655789776', 'War and Peace', 'war book', 25, 4, 3, 4),
 (7, '2123-1231231231', 'Ugly Love', 'its book', 24.25, 1, 3, 4),
-(8, '123-213213123', 'Romeo and Juliet', 'love book', 25.12, 1, 3, 4);
+(8, '123-213213123', 'Romeo and Juliet', 'love book', 25.12, 1, 3, 4),
+(9, '213-1231231223', 'Gandhi Biography', 'Book About Gandhi', 45, 4, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -110,13 +111,6 @@ CREATE TABLE `checkout` (
   `user_id` int(11) NOT NULL,
   `renewal_count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `checkout`
---
-
-INSERT INTO `checkout` (`checkout_id`, `checkout_date`, `due_date`, `item_id`, `user_id`, `renewal_count`) VALUES
-(20, '2025-04-25', '2025-04-30', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -138,7 +132,7 @@ CREATE TABLE `fine` (
 --
 
 INSERT INTO `fine` (`fine_id`, `user_id`, `item_id`, `amount`, `date`, `fine_status_id`) VALUES
-(5, 1, 1, 9, '2025-04-25', 1);
+(6, 1, 1, 2, '2025-04-25', 2);
 
 -- --------------------------------------------------------
 
@@ -182,7 +176,8 @@ CREATE TABLE `game` (
 INSERT INTO `game` (`game_id`, `title`, `description`, `cost`, `genre_id`, `publisher_id`, `platform_id`) VALUES
 (1, 'Prince of Persia', 'Play as a prince of persia to save your queen', 49, 2, 2, 2),
 (2, 'The Last of Us 2', 'Legendary last of us game 2', 45.5, 4, 3, 2),
-(3, 'Assassin Creed II', 'assassin creed game in Italy', 20, 4, 5, 2);
+(3, 'Assassin Creed II', 'assassin creed game in Italy', 20, 4, 5, 2),
+(4, 'Tekken 5', 'Karate Game', 20, 7, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -224,7 +219,7 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VALUES
-(1, 1, 1, 2),
+(1, 1, 1, 1),
 (2, 2, 1, 1),
 (3, 1, 3, 1),
 (4, 1, 2, 1),
@@ -232,7 +227,7 @@ INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VAL
 (9, 6, 1, 1),
 (10, 6, 1, 1),
 (11, 6, 1, 1),
-(12, 2, 2, 3),
+(12, 2, 2, 1),
 (13, 2, 2, 1),
 (14, 2, 2, 1),
 (15, 2, 3, 1),
@@ -247,13 +242,18 @@ INSERT INTO `item` (`item_id`, `media_id`, `item_type_id`, `item_status_id`) VAL
 (24, 3, 2, 1),
 (25, 3, 2, 1),
 (26, 3, 2, 1),
-(27, 4, 2, 1),
-(28, 4, 2, 1),
 (29, 8, 1, 3),
 (30, 8, 1, 1),
 (31, 8, 1, 1),
 (32, 8, 1, 1),
-(33, 8, 1, 1);
+(33, 8, 1, 1),
+(34, 9, 1, 1),
+(35, 9, 1, 1),
+(36, 4, 2, 1),
+(37, 4, 2, 1),
+(38, 4, 2, 1),
+(39, 4, 3, 3),
+(40, 4, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -319,7 +319,8 @@ CREATE TABLE `movie` (
 INSERT INTO `movie` (`movie_id`, `title`, `description`, `cost`, `genre_id`, `publisher_id`) VALUES
 (1, 'Titanic', 'Legendary titanic ship movie', 20, 2, 3),
 (2, 'Troy', 'trojan war movie', 30, 4, 4),
-(3, 'Money Heist', 'robbery series', 25.85, 7, 3);
+(3, 'Money Heist', 'robbery series', 25.85, 7, 3),
+(4, 'Avatar', 'Epic movie of avtar', 45, 4, 2);
 
 -- --------------------------------------------------------
 
@@ -381,9 +382,9 @@ CREATE TABLE `reservation` (
 --
 
 INSERT INTO `reservation` (`reservation_id`, `item_id`, `user_id`, `date`) VALUES
-(8, 12, 1, '2025-04-24'),
 (11, 29, 2, '2025-04-24'),
-(14, 19, 2, '2025-04-24');
+(14, 19, 2, '2025-04-24'),
+(16, 39, 1, '2025-04-25');
 
 -- --------------------------------------------------------
 
@@ -431,7 +432,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `first_name`, `last_name`, `email`, `phone_number`, `password`, `user_type_id`) VALUES
 (1, 'Mahalakshmi', 'Shambu Gowda', 'maha@gmail.com', '+1 8762541999', 'maha', 1),
-(2, 'Yen', 'Pham', 'yen@gmail.com', '+1 4563577893', 'yen', 5);
+(2, 'Yen', 'Pham', 'yen@gmail.com', '+1 4563577893', 'yen', 5),
+(3, 'Ganesh', 'Konduri', 'ganesh@gmail.com', '+1 999956457', 'ganesh', 3);
 
 -- --------------------------------------------------------
 
@@ -607,25 +609,25 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `author`
 --
 ALTER TABLE `author`
-  MODIFY `author_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `author_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `book`
 --
 ALTER TABLE `book`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `checkout`
 --
 ALTER TABLE `checkout`
-  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `fine`
 --
 ALTER TABLE `fine`
-  MODIFY `fine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `fine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `fine_status`
@@ -637,19 +639,19 @@ ALTER TABLE `fine_status`
 -- AUTO_INCREMENT for table `game`
 --
 ALTER TABLE `game`
-  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `genre`
 --
 ALTER TABLE `genre`
-  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `item`
 --
 ALTER TABLE `item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `item_status`
@@ -667,7 +669,7 @@ ALTER TABLE `item_type`
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
-  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `movie_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `platform`
@@ -679,25 +681,25 @@ ALTER TABLE `platform`
 -- AUTO_INCREMENT for table `publisher`
 --
 ALTER TABLE `publisher`
-  MODIFY `publisher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `publisher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `saved_item`
 --
 ALTER TABLE `saved_item`
-  MODIFY `saved_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `saved_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user_type`
